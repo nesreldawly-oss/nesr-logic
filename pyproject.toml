@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nesr-logic"
+version = "0.1.0"
+description = "General-purpose Python Logic Discovery and Extraction"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    {name = "NESR Logic Maintainers"}
+]
+keywords = [
+    "logic",
+    "static-analysis",
+    "ast",
+    "business-logic",
+    "code-analysis",
+    "logic-extraction",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "build>=1.0.0",
+]
+
+[project.scripts]
+nesr-logic = "nesr_logic:main"
+
+[project.urls]
+Homepage = "https://github.com/nesr-logic/nesr-logic"
+Documentation = "https://github.com/nesr-logic/nesr-logic#readme"
+Repository = "https://github.com/nesr-logic/nesr-logic.git"
+Issues = "https://github.com/nesr-logic/nesr-logic/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+nesr_logic = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
