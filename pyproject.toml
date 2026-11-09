@@ -46,10 +46,10 @@ dev = [
 nesr-logic = "nesr_logic:main"
 
 [project.urls]
-Homepage = "https://github.com/nesr-logic/nesr-logic"
-Documentation = "https://github.com/nesr-logic/nesr-logic#readme"
-Repository = "https://github.com/nesr-logic/nesr-logic.git"
-Issues = "https://github.com/nesr-logic/nesr-logic/issues"
+Homepage = "https://github.com/nesreldawly-oss/nesr-logic"
+Documentation = "https://github.com/nesreldawly-oss/nesr-logic#readme"
+Repository = "https://github.com/nesreldawly-oss/nesr-logic.git"
+Issues = "https://github.com/nesreldawly-oss/nesr-logic/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

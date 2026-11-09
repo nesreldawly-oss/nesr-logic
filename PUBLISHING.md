@@ -33,7 +33,7 @@ git commit -m "feat: initial release of nesr-logic v0.1.0"
 
 ```bash
 git branch -M main
-git remote add origin https://github.com/nesr-logic/nesr-logic.git
+git remote add origin https://github.com/nesreldawly-oss/nesr-logic.git
 git push -u origin main
 ```
 
