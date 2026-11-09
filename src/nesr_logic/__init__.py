@@ -22,9 +22,20 @@ VAL_FNS = {"isinstance", "hasattr", "issubclass", "len", "callable"}
 
 @dataclasses.dataclass
 class LogicRecord:
-    id: str; category: list[str]; description: str; file: str; line_start: int; line_end: int
-    expression: str; inputs: list[str]; outputs: list[str]; inferred_types: dict[str, str]
-    dependencies: list[str]; is_annotated: bool; detection_method: str; confidence: str
+    id: str
+    category: list[str]
+    description: str
+    file: str
+    line_start: int
+    line_end: int
+    expression: str
+    inputs: list[str]
+    outputs: list[str]
+    inferred_types: dict[str, str]
+    dependencies: list[str]
+    is_annotated: bool
+    detection_method: str
+    confidence: str
     warnings: list[str]
 
     def to_dict(self) -> dict[str, Any]:
@@ -69,15 +80,17 @@ def format_report(report: ScanReport) -> str:
 
 
 def _find_annotations(code_bytes: bytes) -> set[int]:
-    annot_lines, code_lines, pending = set(), set(), False
+    annot_lines, code_lines, pending_line = set(), set(), 0
     try:
         for t in tokenize.tokenize(io.BytesIO(code_bytes).readline):
             if t.type in (tokenize.NAME, tokenize.NUMBER, tokenize.STRING, tokenize.OP):
                 code_lines.add(t.start[0])
-                if pending: annot_lines.add(t.start[0]); pending = False
+                if pending_line and t.start[0] == pending_line + 1:
+                    annot_lines.add(t.start[0])
+                pending_line = 0
             elif t.type == tokenize.COMMENT and re.search(r"#\s*\(L\)(?:\s*[:\-].*)?$", t.string.strip()):
                 if t.start[0] in code_lines: annot_lines.add(t.start[0])
-                else: pending = True
+                else: pending_line = t.start[0]
     except tokenize.TokenError:
         pass
     return annot_lines
@@ -126,7 +139,9 @@ def _classify_and_extract(
     if isinstance(node, ast.AnnAssign) and isinstance(node.annotation, ast.Name):
         for out in outputs: types[out] = node.annotation.id
 
-    start, end = getattr(node, "lineno", 1), getattr(node, "end_lineno", getattr(node, "lineno", 1))
+    target_node = expr_node if isinstance(node, (ast.If, ast.While, ast.Assert)) else node
+    start = getattr(target_node, "lineno", getattr(node, "lineno", 1))
+    end = getattr(target_node, "end_lineno", start)
     expr_text = "\n".join(code_lines[start - 1:end]).strip()
     warnings = []
     if not is_annot:
@@ -201,7 +216,7 @@ def main(argv: list[str] | None = None) -> int:
     scan_p.add_argument("--strict", action="store_true", help="Exit 1 on warnings or errors")
     args = parser.parse_args(argv)
     if args.cmd != "scan":
-        parser.print_help(); return 1
+        parser.print_help(); return 0
     rep = scan(args.path)
     print(rep.to_json() if args.json else rep.format_terminal())
     return 1 if (args.strict and (rep.errors or any(r.warnings for r in rep.records))) else 0
